@@ -2,7 +2,7 @@ const { RateLimiterMemory } = require("rate-limiter-flexible");
 const statusCode = require("http-status-codes")
 const opt = {
     points: 5,
-    duration: 20,
+    duration: 10,
     blockDuration: 5
 }
 const Limit = new RateLimiterMemory(opt)

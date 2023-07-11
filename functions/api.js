@@ -1,14 +1,15 @@
 const express = require("express")
 const app = express();
 require('dotenv').config();
-
+const router = express.Router()
+const serverless = require('serverless-http')
 // Extra Security packages goes here
 const helmet = require('helmet')
 const cors = require("cors")
 const xss = require("xss-clean")
 
 // Flexible Rate Limiter!
-const { RateLimit } = require("./MiddleWare/RateLimiter")
+const { RateLimit } = require("../MiddleWare/RateLimiter")
 app.use(RateLimit)
 
 // Express Rate Limiter
@@ -29,36 +30,36 @@ app.use(xss())
 // Incoming Data to JSON
 app.use(express.json())
 // Connect to MongoDB
-const ConnectDB = require("./MongoDB/Database")
+const ConnectDB = require("../MongoDB/Database")
 
 
 // Patient Authorization Router Goes Here
-const PatientRouter_Authorization = require("./Router/Patient_Authorization_Router")
+const PatientRouter_Authorization = require("../Router/Patient_Authorization_Router")
 app.use('/api/v1/userauth', PatientRouter_Authorization)
 
 // Below Will handle PatientRoutings
-const Patient_Authentication = require("./MiddleWare/Patient_Authentication");
-const Patient = require("./Router/Patient")
-const PatientBioData = require("./Router/Patient_BioData")
-const PatientDetails_Router = require("./Router/Patient_Details_Router");
-const Appointments = require("./Router/AppointsmentRouter")
+const Patient_Authentication = require("../MiddleWare/Patient_Authentication");
+const Patient = require("../Router/Patient")
+const PatientBioData = require("../Router/Patient_BioData")
+const PatientDetails_Router = require("../Router/Patient_Details_Router");
+const Appointments = require("../Router/AppointsmentRouter")
 app.use('/api/v1/userdetails', Patient_Authentication, PatientDetails_Router, PatientBioData, Appointments)
 app.use('/api/v1/user', Patient_Authentication, Patient)
- 
+
 
 
 
 
 // HealthCare Login/Register Function Goes Here
-const Authorizationrouter = require("./Router/HIP_Authorization_Router");
+const Authorizationrouter = require("../Router/HIP_Authorization_Router");
 app.use("/api/v1/healthcareauth", Authorizationrouter)
 
 
 
-const authentication = require("./MiddleWare/HIP_Authentication");
-const HIP_Info = require("./Router/HIP_Info") 
-const GET_Patient = require("./Router/HIP_Patient_Issues")
-const HIP_router = require("./Router/HIP_PatientDetails_Router");
+const authentication = require("../MiddleWare/HIP_Authentication");
+const HIP_Info = require("../Router/HIP_Info")
+const GET_Patient = require("../Router/HIP_Patient_Issues")
+const HIP_router = require("../Router/HIP_PatientDetails_Router");
 
 app.use("/api/v1/healthcaredetails", authentication, HIP_Info, HIP_router)
 app.use("/api/v1/healthcare", authentication, GET_Patient)
@@ -75,4 +76,7 @@ const start = async () => {
         console.log("Something Went Wrong, Message: ", error.message)
     }
 }
-start(); 
+start();
+
+app.use('/.netlify/functions/api', router)
+module.exports.handler = serverless(app)
