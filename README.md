@@ -1,7 +1,7 @@
 # Bharat-Seva+ 
 Welcome to the Express server of the Bharat-Seva+ (Plus) Project! This project is built using Node.js, Express.js, Firebase, MongoDB, and various third-party modules.
 
-BharatSeva+ aims to provide services to end-users, normal people, and patients. The generated data will be logged and recorded for future reference.
+BharatSeva+ aims to provide services to end-users, and patients. The generated data will be logged and recorded for future reference.
 
 ## Features
 - Built with Express.js for efficient and scalable server-side development.
